@@ -54,9 +54,20 @@ main {
     position: absolute;
     margin-left: -310px;
     background-color: indianred;
-    transition: margin-left 10s, transform 10s;
     display: flex;
     padding: 20px;
     flex-direction: column;
     align-items: flex-end;
+}
+
+.menu-fast {
+    transition: margin-left 1s, transform 1s;
+}
+
+.menu-slow {
+    transition: margin-left 10s, transform 10s;
+}
+
+.btn-wrapper {
+    padding: 10px 0;
 }
