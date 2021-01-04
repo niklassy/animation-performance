@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="de" style="position: relative; width: 100%; height: 100%;">
+<head>
+    <meta charset="UTF-8">
+    <title>Animation Performance | Schlechte Animation</title>
+    <style>
+        #menu {
+            height: 100%;
+            width: 300px;
+            position: absolute;
+            margin-left: -310px;
+            background-color: indianred;
+            transition: margin-left 10s, transform 10s;
+        }
+        .open-menu {
+            margin-left: 0 !important;
+        }
+    </style>
+    <script>
+        function onbtn() {
+          var el = document.getElementById('menu');
+          el.classList.toggle('open-menu');
+        }
+    </script>
+</head>
+<body style="position: relative; width: 100%; height: 100%;">
+    <div id="menu" class="close-menu">Menu</div>
+    <button onclick="onbtn()" style="margin-left: 500px">Menü Toggle</button>
+    <a href="index.html">Anleitung</a>
+    <a href="good_animation.html">Gute Animation</a>
+    <a href="bad_animation.html">Schlechte Animation</a>
+</body>
+</html>
