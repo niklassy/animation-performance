@@ -58,6 +58,11 @@ main {
     padding: 20px;
     flex-direction: column;
     align-items: flex-end;
+    /* restliche Styles */
+}
+
+.transform-will-change {
+    will-change: transform;
 }
 
 .menu-fast {
