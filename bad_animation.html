@@ -50,25 +50,7 @@
           } else {
             menu.style.marginLeft = (marginLeftInt + 1) + 'px';
           }
-        }, 5);
-
-        var frame = function () {
-          menuBlocked = true;
-          var marginLeft = menu.style.marginLeft || '-310px';
-          var marginLeftInt = parseInt(marginLeft.replace('px', ''));
-
-          if (marginLeftInt === 0 && open || marginLeftInt === -310 && !open) {
-            menu.classList.add('open');
-            menuBlocked = false;
-          } else if (!open) {
-            menu.style.marginLeft = (marginLeftInt - 1) + 'px';
-            window.requestAnimationFrame(frame);
-          } else {
-            menu.style.marginLeft = (marginLeftInt + 1) + 'px';
-            window.requestAnimationFrame(frame);
-          }
-        }
-        window.requestAnimationFrame(frame);
+        }, 10);
       }
 
       function closeMenu() {
