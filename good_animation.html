@@ -5,34 +5,70 @@
     <link rel="stylesheet" href="styles.css">
     <title>Animation Performance | Gute Animation</title>
     <script>
-      function togglemenu() {
-        var el = document.getElementById('menu');
-        el.classList.toggle('open-menu');
+      var openedViaJs = false;
+      var menuBlocked = false;
+
+      function transitionMenuToggle(open) {
+        if (menuBlocked) return;
+
+        var menu = document.getElementById('menu');
+
+        if (open) {
+          openedViaJs = false;
+          menu.classList.add('open-menu');
+          menu.classList.add('menu-transition');
+        } else {
+          menu.classList.remove('open-menu');
+        }
       }
 
-      function onbtnslow() {
-        var el = document.getElementById('menu');
-        el.classList.remove('menu-fast', 'menu-slow');
-        togglemenu();
-        el.classList.add('menu-slow');
+      function jsMenuToggle(open) {
+        if (menuBlocked) return;
+
+        var menu = document.getElementById('menu');
+
+        if (open) {
+          openedViaJs = true;
+          menu.classList.remove('menu-transition');
+        }
+
+        var frame = function () {
+          menuBlocked = true;
+          var transform = menu.style.transform || 'translateX(0px)';
+          var transformInt = parseInt(transform.replace('translateX(', '').replace('px)', ''));
+
+          if (transformInt === 300 && open || transformInt === 0 && !open) {
+            menuBlocked = false;
+          } else if (!open) {
+            menu.style.transform = 'translateX(' + (transformInt - 1) + 'px)';
+            window.requestAnimationFrame(frame);
+          } else {
+            menu.style.transform = 'translateX(' + (transformInt + 1) + 'px)';
+            window.requestAnimationFrame(frame);
+          }
+        }
+        window.requestAnimationFrame(frame);
       }
 
-      function onbtnfast() {
-        var el = document.getElementById('menu');
-        el.classList.remove('menu-fast', 'menu-slow');
-        togglemenu();
-        el.classList.add('menu-fast');
+      function closeMenu() {
+        if (menuBlocked) return;
+
+        if (openedViaJs) {
+          jsMenuToggle(false);
+        } else {
+          transitionMenuToggle(false);
+        }
       }
     </script>
     <style>
         .open-menu {
-            transform: translateX(300px);
+            transform: translateX(300px) !important;
         }
     </style>
 </head>
 <body style="position: relative; width: 100%; height: 100%;">
 <div id="menu" class="transform-will-change">
-    <button onclick="togglemenu()">Schließen</button>
+    <button onclick="closeMenu()">Schließen</button>
 </div>
 <nav>
     <a href="index.html">Anleitung</a>
@@ -42,10 +78,10 @@
 <main>
     <h1>Gute Animation</h1>
     <div class="btn-wrapper">
-        <button onclick="onbtnslow()">Klicke auf mich, um das Menü langsam zu öffnen</button>
+        <button onclick="jsMenuToggle(true)">Klicke auf mich, um das Menü mit JS zu öffnen</button>
     </div>
     <div class="btn-wrapper">
-        <button onclick="onbtnfast()">Klicke auf mich, um das Menü schnell zu öffnen</button>
+        <button onclick="transitionMenuToggle(true)">Klicke auf mich, um das Menü via Transition zu öffnen</button>
     </div>
 </main>
 </body>

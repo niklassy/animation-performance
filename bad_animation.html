@@ -10,29 +10,81 @@
         }
     </style>
     <script>
-      function togglemenu() {
-        var el = document.getElementById('menu');
-        el.classList.toggle('open-menu');
+      var openedViaJs = false;
+      var menuBlocked = false;
+
+      function transitionMenuToggle(open) {
+        if (menuBlocked) return;
+
+        var menu = document.getElementById('menu');
+
+        if (open) {
+          openedViaJs = false;
+          menu.classList.add('open-menu');
+          menu.classList.add('menu-transition');
+        } else {
+          menu.classList.remove('open-menu');
+        }
       }
 
-      function onbtnslow() {
-        var el = document.getElementById('menu');
-        el.classList.remove('menu-fast', 'menu-slow');
-        togglemenu();
-        el.classList.add('menu-slow');
+      function jsMenuToggle(open) {
+        if (menuBlocked) return;
+
+        var menu = document.getElementById('menu');
+
+        if (open) {
+          openedViaJs = true;
+          menu.classList.remove('menu-transition');
+        }
+
+        var id = setInterval(function () {
+          menuBlocked = true;
+          var marginLeft = menu.style.marginLeft || '-310px';
+          var marginLeftInt = parseInt(marginLeft.replace('px', ''));
+
+          if (marginLeftInt === 0 && open || marginLeftInt === -310 && !open) {
+            clearInterval(id);
+            menuBlocked = false;
+          } else if (!open) {
+            menu.style.marginLeft = (marginLeftInt - 1) + 'px';
+          } else {
+            menu.style.marginLeft = (marginLeftInt + 1) + 'px';
+          }
+        }, 5);
+
+        var frame = function () {
+          menuBlocked = true;
+          var marginLeft = menu.style.marginLeft || '-310px';
+          var marginLeftInt = parseInt(marginLeft.replace('px', ''));
+
+          if (marginLeftInt === 0 && open || marginLeftInt === -310 && !open) {
+            menu.classList.add('open');
+            menuBlocked = false;
+          } else if (!open) {
+            menu.style.marginLeft = (marginLeftInt - 1) + 'px';
+            window.requestAnimationFrame(frame);
+          } else {
+            menu.style.marginLeft = (marginLeftInt + 1) + 'px';
+            window.requestAnimationFrame(frame);
+          }
+        }
+        window.requestAnimationFrame(frame);
       }
 
-      function onbtnfast() {
-        var el = document.getElementById('menu');
-        el.classList.remove('menu-fast', 'menu-slow');
-        togglemenu();
-        el.classList.add('menu-fast');
+      function closeMenu() {
+        if (menuBlocked) return;
+
+        if (openedViaJs) {
+          jsMenuToggle(false);
+        } else {
+          transitionMenuToggle(false);
+        }
       }
     </script>
 </head>
 <body style="position: relative; width: 100%; height: 100%;">
 <div id="menu">
-    <button onclick="togglemenu()">Schließen</button>
+    <button onclick="closeMenu()">Schließen</button>
 </div>
 <nav>
     <a href="index.html">Anleitung</a>
@@ -42,10 +94,10 @@
 <main>
     <h1>Schlechte Animation</h1>
     <div class="btn-wrapper">
-        <button onclick="onbtnslow()">Klicke auf mich, um das Menü langsam zu öffnen</button>
+        <button onclick="jsMenuToggle(true)">Klicke auf mich, um das Menü mit JS zu öffnen</button>
     </div>
     <div class="btn-wrapper">
-        <button onclick="onbtnfast()">Klicke auf mich, um das Menü schnell zu öffnen</button>
+        <button onclick="transitionMenuToggle(true)">Klicke auf mich, um das Menü via Transition zu öffnen</button>
     </div>
 </main>
 </body>

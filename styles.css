@@ -55,6 +55,10 @@ main {
     align-items: flex-end;
 }
 
+.menu-transition {
+    transition: margin-left 1s, transform 1s;
+}
+
 .transform-will-change {
     will-change: transform;
 }
