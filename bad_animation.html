@@ -12,27 +12,32 @@
     <script>
       var openedViaJs = false;
       var menuBlocked = false;
+      var inJsToggle = false;
+      var inTransitionToggle = false;
 
       function transitionMenuToggle(open) {
-        if (menuBlocked) return;
+        if (menuBlocked || inJsToggle) return;
 
         var menu = document.getElementById('menu');
 
         if (open) {
+          inTransitionToggle = true;
           openedViaJs = false;
           menu.classList.add('open-menu');
           menu.classList.add('menu-transition');
         } else {
           menu.classList.remove('open-menu');
+          inTransitionToggle = false;
         }
       }
 
       function jsMenuToggle(open) {
-        if (menuBlocked) return;
+        if (menuBlocked || inTransitionToggle) return;
 
         var menu = document.getElementById('menu');
 
         if (open) {
+          inJsToggle = true;
           openedViaJs = true;
           menu.classList.remove('menu-transition');
         }
@@ -45,6 +50,7 @@
           if (marginLeftInt === 0 && open || marginLeftInt === -310 && !open) {
             clearInterval(id);
             menuBlocked = false;
+            inJsToggle = false;
           } else if (!open) {
             menu.style.marginLeft = (marginLeftInt - 1) + 'px';
           } else {
